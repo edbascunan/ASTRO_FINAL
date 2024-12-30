@@ -1,0 +1,33 @@
+---
+import CardFront from './ProjectCard/CardFront.astro';
+import CardBack from './ProjectCard/CardBack.astro';
+import type { Project } from '../types/projects';
+
+interface Props extends Project {}
+
+const { title, description, imageUrl, services, details, modelUrl } = Astro.props;
+const isDefaultModel = !modelUrl || modelUrl.trim() === '';
+
+// Descripción del servicio por defecto basada en los servicios del proyecto
+const serviceDescription = `Este proyecto ofrece los siguientes servicios: ${services.join(', ')}. ${description}`;
+---
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+  <div class="relative [perspective:1000px]">
+    <div class="relative transition-all duration-700 [transform-style:preserve-3d]" data-card-inner>
+      <CardFront {...Astro.props} isDefaultModel={isDefaultModel} />
+      <CardBack modelUrl={modelUrl} isDefaultModel={isDefaultModel} serviceDescription={serviceDescription} />
+    </div>
+  </div>
+</div>
+
+<script>
+  import { ProjectCardComponent } from './ProjectCard/ProjectCardLogic';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const cardElement = document.currentScript?.parentElement;
+    if (cardElement) {
+      new ProjectCardComponent(cardElement);
+    }
+  });
+</script>
